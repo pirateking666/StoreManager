@@ -1,0 +1,505 @@
+﻿@model StoreManager.Models.DAO.CustomerModel
+@{
+    /**/
+
+    ViewBag.Title = "Giỏ hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="col-sm-10 clear">
+    <div class="content-body" style="height:auto;">
+        <div class="col-sm-12"></div>
+        <div class="col-sm-12">
+            <form id="Cart">
+                @if (ViewBag.ListShoppingCart != null)
+                {
+                    foreach (var item in ViewBag.ListShoppingCart)
+                    {
+                        <div class="col-sm-12" style="background:white;border-radius:5px;height:200px;border:1px solid black;margin-top:20px;">
+                            <div class="col-sm-12">
+                                <div class="col-sm-3" style="border: 1px solid #eeeeee; margin-top:7px;"><img src="data:image;base64,@System.Convert.ToBase64String(item.productImage)" width="150" height="180" style="margin-left:auto;margin-right:auto;display:block;" /></div>
+                                <div class="col-sm-8" style="margin-top:20px;">
+                                    <div class="col-sm-12" style="font-size:17px;"><b>Tên sản phẩm:</b> @item.productName</div>
+                                    <div class="col-sm-12" style="color: red; padding-top:20px;"><b>Giá:</b> @string.Format("{0:n0}", item.price) VND</div>
+                                    <input type="hidden" id="price-@item.ID" value="@item.price" />
+                                    <div class="col-sm-12 clear" style="padding-top:20px;">
+                                        <div class="col-sm-4"><b>Loại:</b> @item.productType</div>
+                                        <div class="col-sm-8"><b>NSX:</b> @item.producer</div>
+                                    </div>
+                                    <div class="col-sm-12 clear" style="padding-top:45px;">
+                                        <div class="col-sm-4"><b>Sẵn có:</b> @item.quantity</div>
+                                        @if (item.quantity < 10)
+                                        {
+                                            <div class="col-sm-8"><b>Số lượng đặt hàng:</b> <input type="number" id="QuantityProduct-@item.ID" min="1" max="@item.quantity" value="1" onkeydown="return false" /></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-sm-8"><b>Số lượng đặt hàng:</b> <input type="number" id="QuantityProduct-@item.ID" min="1" max="10" value="1" onkeydown="return false" /></div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-sm-1 clear">
+                                    <a class="btn btn-danger" style="float:right; margin-top:15px;" onclick="RemoveCart(@item.ID)"><i class="glyphicon glyphicon-remove"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-sm-12">
+                        <img src="~/Content/Image/empty-cart.png" class="img-responsive" style="margin-left:auto;margin-right:auto;display:block;" />
+                    </div>
+                }
+            </form>
+        </div>
+        <div class="col-sm-12" style="height:30px;"></div>
+    </div>
+</div>
+@if (ViewBag.ListShoppingCart != null)
+{
+    <div class="col-sm-12"><a class="btn btn-success" onclick="Checkout()" style="position:fixed; float:right; margin-left:15px; margin-top:540px;font-size:19px;"><i class="glyphicon glyphicon-usd"></i> Thanh toán</a></div>
+}
+<div class="col-sm-12">
+    <div class="modal fade" id="CustomerType">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Xác nhận khách hàng</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12">
+                        Bạn đã từng mua hàng ở Thế giới di động Fake chưa? Vui lòng nhập số điện thoại để xác minh nhé!
+                    </div>
+                    <form>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Số điện thoại:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.phone, new { @class = "form-control", @placeholder = "Số điện thoại...", @autofocus = "autofocus" })
+                                @Html.ValidationMessageFor(Model => Model.phone, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="ClosePhoneSign()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitPhoneSign()">Submit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="modal fade" id="NewCustomer">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Đặt hàng</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12">
+                        <div class="col-sm-12" id="phoneCusNew">Xin chào khách hàng mới - <span></span>, vui lòng nhập thông tin và kiểm tra đơn hàng trước khi đặt hàng</div>
+                        <div class="col-sm-12" style="height:15px;"></div>
+                        <div class="col-sm-12">
+                            <table class="table" style="border: 1px solid #eeeeee;">
+                                <thead>
+                                    <tr>
+                                        <th>Tên hàng</th>
+                                        <th>SL</th>
+                                        <th>Đơn giá</th>
+                                        <th>Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                @if (ViewBag.ListShoppingCart != null)
+                                {
+                                    foreach (var item in ViewBag.ListShoppingCart)
+                                    {
+                                        <tbody>
+                                            <tr>
+                                                <td>@item.productName</td>
+                                                <td id="SL-@item.ID"><span></span></td>
+                                                <td>@string.Format("{0:n0}", item.price) VND</td>
+                                                <td id="TT-@item.ID"><span></span></td>
+                                            </tr>
+                                        </tbody>
+                                    }
+                                }
+                            </table>
+                        </div>
+                        <form id="NewCustomerForm">
+                            <div class="col-sm-12 form-group">
+                                <div class="col-sm-5">@Html.Label("Họ và tên:", new { @class = "label-style2" })</div>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(Model => Model.NewCustomer.name, new { @class = "form-control", @placeholder = "Họ và tên...", @autofocus = "autofocus" })
+                                    @Html.ValidationMessageFor(Model => Model.NewCustomer.name, "", new { @class = "error-message" })
+                                </div>
+                            </div>
+                            <div class="col-sm-12" style="height:30px;"></div>
+                            <div class="form-group col-sm-12" id="birth" style="height:20px;">
+                                <div class="col-sm-5">@Html.Label("Ngày sinh:", new { @class = "label-style2" })</div>
+                                <div class="col-sm-7">
+                                    <div class="col-sm-4" style="padding-left:0px;">
+                                        @Html.DropDownListFor(Model => Model.NewCustomer.day, new SelectList(Enumerable.Range(1, 31)), new { @class = "form-control" })
+                                    </div>
+                                    <div class="col-sm-4" style="padding-left:0px;">
+                                        @Html.DropDownListFor(Model => Model.NewCustomer.month, new SelectList(Enumerable.Range(1, 12)), new { @class = "form-control" })
+                                    </div>
+                                    <div class="col-sm-4 clear">
+                                        @Html.DropDownListFor(Model => Model.NewCustomer.year, new SelectList(Enumerable.Range(1980, 35)), new { @class = "form-control" })
+                                    </div>
+                                    <span class="error-message" style="display:none" id="valid-birth"><span>Ngày sinh không hợp lệ</span></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" style="height:20px;"></div>
+                            <div class="form-group col-sm-12" style="height:20px;">
+                                <div class="col-sm-5">@Html.Label("Giới tính:", new { @class = "label-style2" })</div>
+                                <div class="col-sm-7">
+                                    <div class="col-sm-4 clear">
+                                        @Html.DropDownListFor(Model => Model.NewCustomer.gender, new List<SelectListItem> { new SelectListItem { Text = "Nam", Value = "Nam" }, new SelectListItem { Text = "Nữ", Value = "Nữ" } }, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" style="height:15px;"></div>
+                            <div class="col-sm-12 form-group">
+                                <div class="col-sm-5">@Html.Label("Địa chỉ:", new { @class = "label-style2" })</div>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(Model => Model.NewCustomer.address, new { @class = "form-control", @placeholder = "Địa chỉ..." })
+                                    @Html.ValidationMessageFor(Model => Model.NewCustomer.address, "", new { @class = "error-message" })
+                                </div>
+                            </div>
+                            @Html.TextBoxFor(Model => Model.NewCustomer.phone, new { @class = "hidden" })
+                        </form>
+                        <div style="text-align:center;display:none;" id="loading-gif">
+                            <img src="~/Content/Image/loading.gif" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="CloseNewCustomerCheckOut()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitNewCustomerCheckOut()">Submit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="modal fade" id="OldCustomer">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Đặt hàng</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12">
+                        <div class="col-sm-12" id="phoneCusOld">Xin chào <span></span>, vui lòng kiểm tra đơn hàng trước khi đặt hàng</div>
+                        <div class="col-sm-12" style="height:15px;"></div>
+                        <div class="col-sm-12">
+                            <table class="table" style="border: 1px solid #eeeeee;">
+                                <thead>
+                                    <tr>
+                                        <th>Tên hàng</th>
+                                        <th>SL</th>
+                                        <th>Đơn giá</th>
+                                        <th>Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                @if (ViewBag.ListShoppingCart != null)
+                                {
+                                    foreach (var item in ViewBag.ListShoppingCart)
+                                    {
+                                        <tbody>
+                                            <tr>
+                                                <td>@item.productName</td>
+                                                <td id="SL-@item.ID"><span></span></td>
+                                                <td>@string.Format("{0:n0}", item.price) VND</td>
+                                                <td id="TT-@item.ID"><span></span></td>
+                                            </tr>
+                                        </tbody>
+                                    }
+                                }
+                            </table>
+                        </div>
+                        <form id="OldCustomerForm" style="display:none;">
+                            <div class="col-sm-12 form-group">
+                                <div class="col-sm-5">@Html.Label("Họ và tên:", new { @class = "label-style2" })</div>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(Model => Model.OldCustomer.name, new { @class = "form-control", @placeholder = "Họ và tên...", @autofocus = "autofocus" })
+                                    @Html.ValidationMessageFor(Model => Model.OldCustomer.name, "", new { @class = "error-message" })
+                                </div>
+                            </div>
+                            <div class="col-sm-12" style="height:30px;"></div>
+                            <div class="form-group col-sm-12" id="birth" style="height:20px;">
+                                <div class="col-sm-5">@Html.Label("Ngày sinh:", new { @class = "label-style2" })</div>
+                                <div class="col-sm-7">
+                                    <div class="col-sm-4" style="padding-left:0px;">
+                                        @Html.DropDownListFor(Model => Model.OldCustomer.day, new SelectList(Enumerable.Range(1, 31)), new { @class = "form-control" })
+                                    </div>
+                                    <div class="col-sm-4" style="padding-left:0px;">
+                                        @Html.DropDownListFor(Model => Model.OldCustomer.month, new SelectList(Enumerable.Range(1, 12)), new { @class = "form-control" })
+                                    </div>
+                                    <div class="col-sm-4 clear">
+                                        @Html.DropDownListFor(Model => Model.OldCustomer.year, new SelectList(Enumerable.Range(1980, 35)), new { @class = "form-control" })
+                                    </div>
+                                    <span class="error-message" style="display:none" id="valid-birth1"><span>Ngày sinh không hợp lệ</span></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" style="height:20px;"></div>
+                            <div class="form-group col-sm-12" style="height:20px;">
+                                <div class="col-sm-5">@Html.Label("Giới tính:", new { @class = "label-style2" })</div>
+                                <div class="col-sm-7">
+                                    <div class="col-sm-4 clear">
+                                        @Html.DropDownListFor(Model => Model.OldCustomer.gender, new List<SelectListItem> { new SelectListItem { Text = "Nam", Value = "Nam" }, new SelectListItem { Text = "Nữ", Value = "Nữ" } }, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" style="height:15px;"></div>
+                            <div class="col-sm-12 form-group">
+                                <div class="col-sm-5">@Html.Label("Địa chỉ:", new { @class = "label-style2" })</div>
+                                <div class="col-sm-7">
+                                    @Html.TextBoxFor(Model => Model.OldCustomer.address, new { @class = "form-control", @placeholder = "Địa chỉ..." })
+                                    @Html.ValidationMessageFor(Model => Model.OldCustomer.address, "", new { @class = "error-message" })
+                                </div>
+                            </div>
+                            @Html.TextBoxFor(Model => Model.OldCustomer.phone, new { @class = "hidden" })
+                        </form>
+                        <div style="text-align:center;display:none;" id="loading-gif1">
+                            <img src="~/Content/Image/loading.gif" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-warning" onclick="UpdateOldCustomer()" style="float:left;">Cập nhật thông tin & đặt hàng</a>
+                    <a class="btn btn-default" onclick="CloseOldCustomerCheckOut()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitOldCustomerCheckOut()">Submit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="GetPhone" />
+
+<script>
+    var RemoveCart = function (ProductID) {
+        $.ajax({
+            type: "Post",
+            url: "/Cart/RemoveCart",
+            data: { ProductID: ProductID },
+            success: function () {
+                window.location.reload();
+            }
+        })
+    }
+    var Checkout = function () {
+        $("#CustomerType").modal("show");
+    }
+    var ClosePhoneSign = function () {
+        $("#CustomerType").modal("hide");
+    }
+    var SubmitPhoneSign = function () {
+        if (!$("#phone").valid()) {
+            return false;
+        }
+        var Phone = $("#phone").val();
+        $("#GetPhone").val(Phone);
+        var listProduct = '@Session["listIDProduct"]'.split("-");
+        for (var i = 0; i < listProduct.length; i++) {
+            var SL = "#SL-" + listProduct[i] + " span";
+            var TT = "#TT-" + listProduct[i] + " span";
+            var QP = "#QuantityProduct-" + listProduct[i];
+            var Price = "#price-" + listProduct[i];
+            $(SL).html($(QP).val());
+            $(TT).html((($(QP).val() * $(Price).val()).format()) + " VND");
+        }
+        $.ajax({
+            type: "Post",
+            url: "/Cart/CheckCustomer",
+            data: { phoneNumber: Phone },
+            success: function (bool) {
+                if (bool == "false") {
+                    $("#phoneCusNew span").html(Phone);
+                    $("#CustomerType").modal("hide");
+                    $("#NewCustomer").modal("show");
+                }
+                else {
+                    var listInfo = bool.split("-");
+
+                    $("#phoneCusOld span").html(listInfo[0] + " - " + Phone);
+                    $("#OldCustomer_name").val(listInfo[0]);
+                    $("#OldCustomer_day").val(parseInt(listInfo[1]));
+                    $("#OldCustomer_month").val(parseInt(listInfo[2]));
+                    $("#OldCustomer_year").val(parseInt(listInfo[3]));
+                    $("#OldCustomer_gender").val(listInfo[4]);
+                    $("#OldCustomer_address").val(listInfo[6]);
+                    $("#CustomerType").modal("hide");
+                    $("#OldCustomer").modal("show");
+                }
+            }
+        })
+    }
+    Number.prototype.format = function (n, x) {
+        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+        return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+    };
+    var CloseNewCustomerCheckOut = function () {
+        $("#NewCustomer_name").val("");
+        $("#NewCustomer_address").val("");
+        $("#NewCustomer").modal("hide");
+    }
+    window.onbeforeunload = function () {
+        var listProduct = '@Session["listIDProduct"]';
+        if (listProduct != "") {
+            var listProductSplit = listProduct.split("-");
+            var listQuantity = ""
+            for (var i = 0; i < listProductSplit.length; i++) {
+                var GetID = "#QuantityProduct-" + listProductSplit[i];
+                if (i == 0) {
+                    listQuantity += $(GetID).val();
+                }
+                else {
+                    listQuantity += "-" + $(GetID).val();
+                }
+            }
+            $.ajax({
+                type: "Post",
+                url: "/Cart/UpdateQuantityCart",
+                data: { listQuantity: listQuantity },
+                success: function () {
+
+                }
+            })
+        }
+    }
+    window.onload = function () {
+        var listProduct = '@Session["listIDProduct"]';
+        if (listProduct == "") {
+            var listQuantity = "";
+        }
+        else {
+            var listQuantity = '@Session["listQuantityProduct"]';
+        }
+        if (listProduct == "")
+            return true;
+        else {
+            var listProductSplit = listProduct.split("-");
+            var listQuantitySplit = listQuantity.split("-");
+            for (var i = 0; i < listProductSplit.length; i++) {
+                var GetID = "#QuantityProduct-" + listProductSplit[i];
+                $(GetID).val(listQuantitySplit[i]);
+            }
+        }
+    }
+    var SubmitNewCustomerCheckOut = function () {
+        $("#NewCustomer_phone").val($("#GetPhone").val());
+        var data = $("#NewCustomerForm").serialize();
+        if (!$("#NewCustomerForm").valid()) {
+            return true;
+        }
+        else {
+            if (($("#NewCustomer_month").val() == 2 && $("#NewCustomer_day").val() == 29) ||
+                ($("#NewCustomer_month").val() == 2 && $("#NewCustomer_day").val() == 30) ||
+                ($("#NewCustomer_month").val() == 2 && $("#NewCustomer_day").val() == 31) ||
+                ($("#NewCustomer_month").val() == 4 && $("#NewCustomer_day").val() == 31) ||
+                ($("#NewCustomer_month").val() == 6 && $("#NewCustomer_day").val() == 31) ||
+                ($("#NewCustomer_month").val() == 9 && $("#NewCustomer_day").val() == 31) ||
+                ($("#NewCustomer_month").val() == 11 && $("#NewCustomer_day").val() == 31)) {
+                $("#valid-birth").show();
+                return false;
+            }
+            $("#valid-birth").hide();
+        }
+        $("#loading-gif").show();
+        var listProduct = '@Session["listIDProduct"]';
+        if (listProduct != "") {
+            var listProductSplit = listProduct.split("-");
+            var listQuantity = ""
+            for (var i = 0; i < listProductSplit.length; i++) {
+                var GetID = "#QuantityProduct-" + listProductSplit[i];
+                if (i == 0) {
+                    listQuantity += $(GetID).val();
+                }
+                else {
+                    listQuantity += "-" + $(GetID).val();
+                }
+            }
+            $.ajax({
+                type: "Post",
+                url: "/Cart/UpdateQuantityCart",
+                data: { listQuantity: listQuantity },
+                success: function () {
+                    //
+                }
+            })
+        }
+        $.ajax({
+            type: "Post",
+            url: "/Cart/NewCustomerCheckOut",
+            data: data,
+            success: function () {
+                if (!alert("Đặt hàng thành công!")) { window.location.reload(); }
+            }
+        })
+    }
+    var UpdateOldCustomer = function () {
+        $("#OldCustomerForm").show();
+    }
+    var CloseOldCustomerCheckOut = function () {
+        $("#OldCustomerForm").hide();
+        $("#OldCustomer_name").val("");
+        $("#OldCustomer_address").val("");
+        $("#OldCustomer_phone").val("");
+        $("#OldCustomer").modal("hide");
+    }
+    var SubmitOldCustomerCheckOut = function () {
+        $("#OldCustomer_phone").val($("#GetPhone").val());
+        var data = $("#OldCustomerForm").serialize();
+        if (!$("#OldCustomerForm").valid()) {
+            return false;
+        }
+        else {
+            if (($("#OldCustomer_month").val() == 2 && $("#OldCustomer_day").val() == 29) ||
+                ($("#OldCustomer_month").val() == 2 && $("#OldCustomer_day").val() == 30) ||
+                ($("#OldCustomer_month").val() == 2 && $("#OldCustomer_day").val() == 31) ||
+                ($("#OldCustomer_month").val() == 4 && $("#OldCustomer_day").val() == 31) ||
+                ($("#OldCustomer_month").val() == 6 && $("#OldCustomer_day").val() == 31) ||
+                ($("#OldCustomer_month").val() == 9 && $("#OldCustomer_day").val() == 31) ||
+                ($("#OldCustomer_month").val() == 11 && $("#OldCustomer_day").val() == 31)) {
+                $("#valid-birth1").show();
+                return false;
+            }
+            $("#valid-birth1").hide();
+        }
+        $("#loading-gif1").show();
+        var listProduct = '@Session["listIDProduct"]';
+        if (listProduct != "") {
+            var listProductSplit = listProduct.split("-");
+            var listQuantity = ""
+            for (var i = 0; i < listProductSplit.length; i++) {
+                var GetID = "#QuantityProduct-" + listProductSplit[i];
+                if (i == 0) {
+                    listQuantity += $(GetID).val();
+                }
+                else {
+                    listQuantity += "-" + $(GetID).val();
+                }
+            }
+            $.ajax({
+                type: "Post",
+                url: "/Cart/UpdateQuantityCart",
+                data: { listQuantity: listQuantity },
+                success: function () {
+                    //
+                }
+            })
+        }
+        $.ajax({
+            type: "Post",
+            url: "/Cart/OldCustomerCheckOut",
+            data: data,
+            success: function () {
+                if (!alert("Đặt hàng thành công!")) { window.location.reload(); }
+            }
+        })
+    }
+</script>

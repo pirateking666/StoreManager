@@ -1,0 +1,25 @@
+﻿
+@{
+    Layout = null;
+}
+<div class="col-sm-2 clear">
+    <nav class="navbar navbar-default clear" role="navigation" style="width:auto;">
+        <div class="container clear">
+            <div class="navbar-header navbar-small">
+                <button type="button" class="navbar-toggle button-collapse" data-toggle="collapse" data-target="#navbar-left">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div> @*button colapse*@
+            <div class="collapse navbar-collapse clear" id="navbar-left">
+                <ul class="nav navbar-nav clear ul-small">
+                    <li class="@ViewBag.Home"> @Html.ActionLink("Trang chủ", "Index", "Home") </li>
+                    <li class="@ViewBag.Login"> @Html.ActionLink("Đăng nhập", "Index", "Login") </li>
+                    <li class="@ViewBag.Product">@Html.ActionLink("Sản phẩm", "Index", "ShowProduct")</li>
+                    <li class="@ViewBag.Cart">@Html.ActionLink("Giỏ hàng", "Index", "Cart")</li>
+                </ul>
+            </div> @*navbar*@
+        </div>
+    </nav>
+</div>

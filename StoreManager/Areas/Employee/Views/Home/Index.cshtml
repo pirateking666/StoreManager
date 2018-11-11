@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Trang chủ nhân viên";
+    Layout = "~/Areas/Employee/Views/Shared/_LayoutEmployee.cshtml";
+}
+
+<div class="col-sm-10 clear">
+    <div class="content-body">
+        @RenderPage("~/Views/Shared/_Logout.cshtml")
+        <div class="panel-group">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h2>Trang chủ employee</h2></div>
+                <div class="panel-body">
+                    <h4>Trang chủ employee với username = @Session["username"], mã nhân viên = @Session["employeeID"]</h4>
+                </div>
+                <div class="panel-footer">Trang index chỉ để coi cho vui!</div>
+            </div>
+        </div>
+    </div>
+</div>

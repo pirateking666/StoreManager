@@ -10,20 +10,15 @@ namespace StoreManager.Controllers
     {
         public ActionResult Index()
         {
-            return View();
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
+            ViewBag.Home = "active-menu";
+            ViewBag.Login = "menu-style";
+            ViewBag.Product = "menu-style";
+            ViewBag.Cart = "menu-style";
+            if (Session["listIDProduct"] == null || Session["listQuantityProduct"] == null)
+            {
+                Session["listIDProduct"] = "";
+                Session["listQuantityProduct"] = "";
+            }
             return View();
         }
     }

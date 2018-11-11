@@ -45,10 +45,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -147,10 +155,52 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Employee\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Employee\Controllers\OfferImportWareHouseController.cs" />
+    <Compile Include="Areas\Employee\EmployeeAreaRegistration.cs" />
+    <Compile Include="Common\Md5Function.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\ShowProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\Bill.cs" />
+    <Compile Include="Models\BillDetail.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\DAO\Cart.cs" />
+    <Compile Include="Models\DAO\CheckOut.cs" />
+    <Compile Include="Models\DAO\CustomerModel.cs" />
+    <Compile Include="Models\DAO\ListWareHouse.cs" />
+    <Compile Include="Models\DAO\LoginModel.cs" />
+    <Compile Include="Models\DAO\ModifyAccount.cs" />
+    <Compile Include="Models\DAO\ModifyCustomer.cs" />
+    <Compile Include="Models\DAO\ModifyEmployee.cs" />
+    <Compile Include="Models\DAO\ModifyOrder.cs" />
+    <Compile Include="Models\DAO\ModifyOrderDetail.cs" />
+    <Compile Include="Models\DAO\ModifyProduct.cs" />
+    <Compile Include="Models\DAO\ModifyWareHouse.cs" />
+    <Compile Include="Models\DAO\Status.cs" />
+    <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\ExportWareHouse.cs" />
+    <Compile Include="Models\ExportWareHouseDetail.cs" />
+    <Compile Include="Models\ImportWareHouse.cs" />
+    <Compile Include="Models\ImportWareHouseDetail.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderDetail.cs" />
+    <Compile Include="Models\Position.cs" />
+    <Compile Include="Models\Producer.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\ProductType.cs" />
+    <Compile Include="Models\SaleOff.cs" />
+    <Compile Include="Models\Status.cs" />
+    <Compile Include="Models\StoreManagerDBContext.cs" />
+    <Compile Include="Models\Supplier.cs" />
+    <Compile Include="Models\WareHouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +208,18 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Image\admin-icon.png" />
+    <Content Include="Content\Image\background-content.png" />
+    <Content Include="Content\Image\button-active.png" />
+    <Content Include="Content\Image\button.png" />
+    <Content Include="Content\Image\empty-cart.png" />
+    <Content Include="Content\Image\footer_bg.png" />
+    <Content Include="Content\Image\header-picture.png" />
+    <Content Include="Content\Image\loading.gif" />
+    <Content Include="Content\Image\logo_text.png" />
+    <Content Include="Content\Image\student-icon.png" />
+    <Content Include="Content\Image\teacher-icon.png" />
+    <Content Include="Content\style.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -167,6 +229,15 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Employee\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Shared\_LayoutAdmin.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_MenuAdmin.cshtml" />
+    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Employee\Views\Shared\_MenuEmployee.cshtml" />
+    <Content Include="Areas\Employee\Views\Shared\_LayoutEmployee.cshtml" />
+    <Content Include="Areas\Employee\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Employee\Views\OfferImportWareHouse\Index.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -189,13 +260,19 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_Header.cshtml" />
+    <Content Include="Views\Shared\_Logout.cshtml" />
+    <Content Include="Views\Shared\_MenuMain.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\ShowProduct\Index.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Employee\Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

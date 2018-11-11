@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewBag.Title = "Sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="col-sm-10 clear">
+    <div class="content-body" style="height:1200px;background:white;">
+        <div class="col-sm-12"></div>
+        <div class="col-sm-12">
+            <div class="col-sm-12 clear">
+                @if (ViewBag.ListProduct != null)
+                {
+                    foreach (var item in ViewBag.ListProduct)
+                    {
+                        if (ViewBag.ListCart != null)
+                        {
+                            bool check = false;
+                            foreach (var item1 in ViewBag.ListCart)
+                            {
+                                if (item.ID.ToString() == item1)
+                                {
+                                    <div class="col-sm-4" style="margin-top:50px;border:1px solid #eeeeee;">
+                                        <div class="col-sm-12 clear">
+                                            <div class="col-sm-12" style="text-align:center;font-size:17px;">@item.Name</div>
+                                            <div class="col-sm-12">
+                                                <img src="data:image;base64,@System.Convert.ToBase64String(item.ProductImage)" width="200" height="250" style="margin-left:auto;margin-right:auto;display:block;" />
+                                            </div>
+                                            <div class="col-sm-12 clear">
+                                                <div class="col-sm-7" style="font-size:15px; text-align:right; color:red; padding-top:9px;">@string.Format("{0:n0}", item.SellPrice) VND</div>
+                                                <div class="col-sm-5" style="padding-left:30px;"><a href="/Cart" class="btn btn-default"><i class="glyphicon glyphicon-arrow-right"></i><i class="glyphicon glyphicon-shopping-cart"></i></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    check = true;
+                                    break;
+                                }
+                            }
+                            if (check == false)
+                            {
+                                <div class="col-sm-4" style="margin-top:50px;border:1px solid #eeeeee;">
+                                    <div class="col-sm-12 clear">
+                                        <div class="col-sm-12" style="text-align:center;font-size:17px;">@item.Name</div>
+                                        <div class="col-sm-12">
+                                            <img src="data:image;base64,@System.Convert.ToBase64String(item.ProductImage)" width="200" height="250" style="margin-left:auto;margin-right:auto;display:block;" />
+                                        </div>
+                                        <div class="col-sm-12 clear">
+                                            <div class="col-sm-7" style="font-size:15px; text-align:right; color:red; padding-top:9px;">@string.Format("{0:n0}", item.SellPrice) VND</div>
+                                            <div class="col-sm-5" style="padding-left:35px;"><a class="btn btn-danger" id="ButtonAddCart-@item.ID" onclick="AddCart(@item.ID)"><i class="glyphicon glyphicon-plus"></i><i class="glyphicon glyphicon-shopping-cart"></i></a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-sm-4" style="margin-top:50px;border:1px solid #eeeeee;">
+                                <div class="col-sm-12 clear">
+                                    <div class="col-sm-12" style="text-align:center;font-size:17px;">@item.Name</div>
+                                    <div class="col-sm-12">
+                                        <img src="data:image;base64,@System.Convert.ToBase64String(item.ProductImage)" width="200" height="250" style="margin-left:auto;margin-right:auto;display:block;" />
+                                    </div>
+                                    <div class="col-sm-12 clear">
+                                        <div class="col-sm-7" style="font-size:15px; text-align:right; color:red; padding-top:9px;">@string.Format("{0:n0}", item.SellPrice) VND</div>
+                                        <div class="col-sm-5" style="padding-left:30px;"><a class="btn btn-danger" id="ButtonAddCart-@item.ID" onclick="AddCart(@item.ID)"><i class="glyphicon glyphicon-plus"></i><i class="glyphicon glyphicon-shopping-cart"></i></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-sm-12" style="height:30px;"></div>
+    </div>
+</div>
+<script>
+    var AddCart = function (ProductID) {
+        var ListID = '@Session["listIDProduct"]';
+        var ID = "#ButtonAddCart-" + ProductID;
+        if (ListID == "") {
+            $.ajax({
+                type: "Post",
+                url: "/ShowProduct/UpdateCart",
+                data: { ID: ProductID, Quantity: "1" },
+                success: function () {
+                    $(ID).removeClass("btn btn-danger");
+                    $(ID).addClass("btn btn-default");
+                    $(ID).click(function () { return false; });
+                    window.location.reload();
+                }
+            })
+        }
+        else {
+            $.ajax({
+                type: "Post",
+                url: "/ShowProduct/UpdateCart",
+                data: { ID: "-" + ProductID, Quantity: "-1" },
+                success: function () {
+                    $(ID).removeClass("btn btn-danger");
+                    $(ID).addClass("btn btn-default");
+                    $(ID).click(function () { return false; });
+                    window.location.reload();
+                }
+            })
+        }
+    }
+</script>

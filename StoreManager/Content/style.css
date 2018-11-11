@@ -1,0 +1,198 @@
+﻿body {
+    background: #cccccc;
+    background-attachment: fixed;
+}
+
+.clear {
+    margin: 0;
+    padding: 0;
+}
+
+.img-header {
+    height: 150px;
+    margin-left: 250px;
+}
+
+.footer {
+    height: 150px;
+    background-image: url('Image/footer_bg.png');
+}
+
+.content-footer {
+    line-height: 22px;
+    margin-top: 46px;
+    color: white;
+}
+
+.content-body {
+    width: auto;
+    height: 800px;
+    margin-left: 5px;
+    background-image: url('Image/background-content.png');
+    background-attachment: fixed;
+    border-radius: 5px;
+}
+
+.divider {
+    width: auto;
+    height: 5px;
+}
+
+.menu-style {
+    width: 192px;
+    background-image: url('Image/button.png');
+    border: 1px solid #dddddd;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #222222;
+    font-size: large;
+    font-weight: 600;
+    margin-left: 0px;
+}
+
+nav {
+    border-radius: 0px !important;
+}
+
+.menu-style:hover {
+    background-image: url('Image/button-active.png');
+    border: 1px solid #0094ff;
+    transition: 0.5s;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+    color: white;
+    transition: 0.5s;
+}
+
+.active-menu {
+    width: 192px;
+    background-image: url('Image/button-active.png');
+    border: 1px solid #0094ff;
+}
+
+.navbar-default .navbar-nav .active-menu > a {
+    color: white;
+}
+
+.login-box {
+    margin-left: 200px;
+    margin-right: 200px;
+    margin-top: 100px;
+}
+
+.login-header {
+    height: 50px;
+}
+
+#login-header-text {
+    margin-top: 3px;
+    margin-left: 190px;
+}
+
+.label-style {
+    margin-top: 9px;
+    margin-left: 50px;
+}
+
+.label-style2 {
+    margin-top: 9px;
+    margin-left: 0px;
+}
+
+.button-submit {
+    margin-top: 30px;
+    width: 100px;
+    margin-left: 200px;
+}
+
+.error-message {
+    color: red;
+}
+
+.account-session {
+    height: 50px;
+    background: #0b9444;
+}
+
+    .account-session > h4 {
+        text-align: right;
+        padding-top: 6px;
+        padding-right: 5px;
+        color: white;
+    }
+
+        .account-session > h4 > a {
+            color: #86d8fd;
+        }
+
+            .account-session > h4 > a:hover {
+                color: white;
+            }
+
+.title-account {
+    background: #428bca;
+    text-align: center;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.button-add-account {
+    margin-top: 5px;
+    text-align: center;
+}
+
+@media(max-width: 768px) {
+    .background {
+        background: #ffffff;
+    }
+
+    .footer {
+        background: #ffffff;
+        height: auto;
+        border: solid 1px;
+    }
+
+    .img-header {
+        margin-left: 0px;
+    }
+
+    .content-footer {
+        color: black;
+        margin-top: 10px;
+    }
+
+    .navbar-small {
+        background: #ffffff;
+        width: auto;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+
+    .button-collapse {
+        float: left;
+        margin-left: 10px;
+    }
+
+    .ul-small {
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+        width: auto;
+        background: #dddddd;
+    }
+
+    .menu-style a {
+        margin-left: 10px;
+    }
+
+    #navbar-left {
+        background: white;
+    }
+
+    .menu-style {
+        background-image: none;
+    }
+}
