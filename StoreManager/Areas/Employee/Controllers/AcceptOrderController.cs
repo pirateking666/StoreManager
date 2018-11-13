@@ -8,9 +8,9 @@ using System.Web.Mvc;
 
 namespace StoreManager.Areas.Employee.Controllers
 {
-    public class OfferImportWareHouseController : Controller
+    public class AcceptOrderController : Controller
     {
-        // GET: Employee/OfferImportWareHouse
+        // GET: Employee/AcceptOrder
         public ActionResult Index()
         {
             if (Session["username"] == null || (int)Session["positionID"] != 2)
@@ -19,16 +19,16 @@ namespace StoreManager.Areas.Employee.Controllers
             }
             ViewBag.Home = "menu-style";
             ViewBag.ChangePassword = "menu-style";
-            ViewBag.OfferImportWareHouse = "active-menu";
+            ViewBag.OfferImportWareHouse = "menu-style";
             
-            ViewBag.AcceptOrder = "menu-style";
-            ViewBag.ListWareHouse = new ModifyWareHouse().GetListWareHouse();
-            ViewBag.ListProduct = new SelectList(new ModifyProduct().GetList(), "ID", "Name");
+            ViewBag.AcceptOrder = "active-menu";
+            ViewBag.ListOrder = new ModifyOrder().GetListForEmployee();
+            ViewBag.ListOrderdDetail = new ModifyOrderDetail().GetListOrderDetailForEmployee();
             return View();
         }
-        public JsonResult OfferImport(string listProduct, string listQuantity)
+        public JsonResult AcceptOrder(int orderID)
         {
-            new ImportWareHouseModel().OfferImportWareHouse(listProduct,listQuantity,(string)Session["username"]);
+            new AcceptOrder().Process(orderID, new ModifyEmployee().GetIDByUsername((string)Session["username"]));
             return Json("", JsonRequestBehavior.AllowGet);
         }
     }

@@ -1,0 +1,182 @@
+﻿
+@{
+    ViewBag.Title = "Duyệt nhập kho";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="col-sm-10 clear">
+    <div class="content-body">
+        @RenderPage("~/Views/Shared/_Logout.cshtml")
+        <div class="panel-group">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h2>Danh sách nhập kho</h2></div>
+                <div class="panel-body">
+                    @if (ViewBag.ListAcceptImport != null)
+                    {
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ngày đề xuất</th>
+                                    <th>Tên nhân viên</th>
+                                    <th>nhà cung cấp</th>
+                                    <th>Xem</th>
+                                    <th>Duyệt</th>
+                                    <th>Hủy</th>
+                                </tr>
+                            </thead>
+                            @foreach (var item in ViewBag.ListAcceptImport)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td>@item.ID</td>
+                                        <td>@item.modifyDay.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                        <td>@item.employeeName</td>
+                                        <td id="Supplier-@item.ID">@Html.DropDownList("Supplier", ViewBag.DropSupplier as SelectList, new { @class = "form-control" })</td>
+
+                                        <td>
+                                            <a class="btn btn-default" onclick="ShowDetail(@item.ID)" id="Show-@item.ID"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                            <a class="btn btn-default" onclick="HideDetail(@item.ID)" style="display:none;" id="Hide-@item.ID"><i class="glyphicon glyphicon-eye-close"></i></a>
+                                        </td>
+                                        <td><a class="btn btn-success"><i class="glyphicon glyphicon-ok" onclick="AcceptImport(@item.ID)"></i></a></td>
+                                        <td><a class="btn btn-danger"><i class="glyphicon glyphicon-remove" onclick="RemoveImport(@item.ID)"></i></a></td>
+                                    </tr>
+                                </tbody>
+                                <tbody style="display:none;border: 1px solid #dddddd;" id="ListImportDetail-@item.ID">
+                                    <tr>
+                                        <td colspan="7">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="col-sm-3">Mã sản phẩm</th>
+                                                        <th class="col-sm-5">Tên sản phẩm</th>
+                                                        <th class="col-sm-4">Số lượng</th>
+                                                    </tr>
+                                                </thead>
+                                                @foreach (var item1 in ViewBag.ListImportDetail)
+                                                {
+                                                    if (item.ID == item1.ID)
+                                                    {
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>@item1.productID</td>
+                                                                <td>@item1.Name</td>
+                                                                <td>@item1.Quantity</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    }
+                                                }
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            }
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="modal fade" id="ConfirmAccept">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Xác nhận duyệt phiếu nhập kho</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>Bạn có chắc chắn muốn duyệt phiếu nhập kho này?</h4>
+                    <div style="text-align:center;display:none;" id="loading-gif">
+                        <img src="~/Content/Image/loading.gif" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="CloseAccept()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitAccept()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="modal fade" id="ConfirmRemove">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Xác nhận hủy phiếu nhập kho</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>Bạn có chắc chắn muốn hủy phiếu nhập kho này?</h4>
+                    <div style="text-align:center;display:none;" id="loading-gif1">
+                        <img src="~/Content/Image/loading.gif" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="CloseRemove()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitRemove()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="GetID" />
+<script>
+    var ShowDetail = function (ID) {
+        var GetID = "#ListImportDetail-" + ID;
+        var GetIDShow = "#Show-" + ID;
+        var GetIDHide = "#Hide-" + ID;
+        $(GetID).show();
+        $(GetIDShow).hide();
+        $(GetIDHide).show();
+    }
+    var HideDetail = function (ID) {
+        var GetID = "#ListImportDetail-" + ID;
+        var GetIDShow = "#Show-" + ID;
+        var GetIDHide = "#Hide-" + ID;
+        $(GetID).hide();
+        $(GetIDShow).show();
+        $(GetIDHide).hide();
+    }
+    var AcceptImport = function (ID) {
+        $("#ConfirmAccept").modal("show");
+        $("#GetID").val(ID);
+    }
+    var CloseAccept = function () {
+        $("#ConfirmAccept").modal("hide");
+    }
+    var SubmitAccept = function () {
+        $("#loading-gif").show();
+        var ImportID = $("#GetID").val();
+        var GetID = "#Supplier-" + ImportID + " #Supplier";
+        var SupplierID = $(GetID).val();
+        $.ajax({
+            type: "Post",
+            url: "/Admin/AcceptImportWareHouse/AcceptImport",
+            data: { importID: ImportID, supplierID: SupplierID },
+            success: function () {
+                if (!alert("Đã duyệt phiếu xuất kho")) { window.location.reload(); }
+            }
+        })
+    }
+    var RemoveImport = function () {
+        $("#ConfirmRemove").modal("show");
+        $("#GetID").val(ID);
+    }
+    var CloseRemove = function () {
+        $("#ConfirmRemove").modal("hide");
+    }
+    var SubmitRemove = function () {
+        $("#loading-gif1").show();
+        var ImportID = $("#GetID").val();
+        $.ajax({
+            type: "Post",
+            url: "/Admin/AcceptImportWareHouse/RemoveImport",
+            data: { importID: ImportID },
+            success: function () {
+                if (!alert("Đã hủy phiếu xuất kho")) { window.location.reload(); }
+            }
+        })
+    }
+</script>

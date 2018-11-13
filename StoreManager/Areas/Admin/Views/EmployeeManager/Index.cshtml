@@ -1,0 +1,370 @@
+﻿@model StoreManager.Areas.Admin.Models.EmployeeManager
+@{
+    ViewBag.Title = "Quản lý nhân viên";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="col-sm-10 clear">
+    <div class="content-body" style="height:auto;">
+        @RenderPage("~/Views/Shared/_Logout.cshtml")
+        <div class="col-sm-12"><a class="btn btn-primary" onclick="ShowInsert()"><i class="glyphicon glyphicon-plus"></i> Thêm nhân viên</a></div>
+        <div class="col-sm-12" style="height:20px;"></div>
+        <div class="col-sm-12">
+            <div class="panel-group">
+                <div class="panel panel-primary">
+                    <div class="panel-heading"><h2>Danh sách nhân viên</h2></div>
+                    <div class="panel-body">
+                        @if (ViewBag.ListEmployee != null)
+                        {
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Tên nhân viên</th>
+                                        <th>Giới tính</th>
+                                        <th>Ngày sinh</th>
+                                        <th>SDT</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Tên tài khoản</th>
+                                        <th>Sửa</th>
+                                        <th>Xóa</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in ViewBag.ListEmployee)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td>@item.Name</td>
+                                            <td>@item.Gender</td>
+                                            <td>@item.Birth.Date.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.Phone</td>
+                                            <td>@item.Address</td>
+                                            <td>@item.username</td>
+                                            <td><a class="btn btn-warning" onclick="UpdateEmployee(@item.ID)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                                            <td><a class="btn btn-danger" onclick="DeleteEmployee(@item.ID)"><i class="glyphicon glyphicon-trash"></i></a></td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12" style="height:30px;"></div>
+    </div>
+</div>
+<input type="hidden" id="GetID" />
+<div class="col-sm-12">
+    <div class="modal fade" id="InsertEmployee">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Thêm nhân viên</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="InsertForm">
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Họ và tên:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Insert.Name, new { @class = "form-control", @placeholder = "Họ và tên...", @autofocus = "autofocus" })
+                                @Html.ValidationMessageFor(Model => Model.Insert.Name, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:30px;"></div>
+                        <div class="form-group col-sm-12" id="birth" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Ngày sinh:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="col-sm-4" style="padding-left:0px;">
+                                    @Html.DropDownListFor(Model => Model.Insert.Day, new SelectList(Enumerable.Range(1, 31)), new { @class = "form-control" })
+                                </div>
+                                <div class="col-sm-4" style="padding-left:0px;">
+                                    @Html.DropDownListFor(Model => Model.Insert.Month, new SelectList(Enumerable.Range(1, 12)), new { @class = "form-control" })
+                                </div>
+                                <div class="col-sm-4 clear">
+                                    @Html.DropDownListFor(Model => Model.Insert.Year, new SelectList(Enumerable.Range(1980, 35)), new { @class = "form-control" })
+                                </div>
+                                <span class="error-message" style="display:none" id="valid-birth"><span>Ngày sinh không hợp lệ</span></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:20px;"></div>
+                        <div class="form-group col-sm-12" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Giới tính:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="col-sm-4 clear">
+                                    @Html.DropDownListFor(Model => Model.Insert.Gender, new List<SelectListItem> { new SelectListItem { Text = "Nam", Value = "Nam" }, new SelectListItem { Text = "Nữ", Value = "Nữ" } }, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:15px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Địa chỉ:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Insert.Address, new { @class = "form-control", @placeholder = "Địa chỉ..." })
+                                @Html.ValidationMessageFor(Model => Model.Insert.Address, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Số điện thoại:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Insert.Phone, new { @class = "form-control", @placeholder = "Số điện thoại..." })
+                                @Html.ValidationMessageFor(Model => Model.Insert.Phone, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Tên tài khoản:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Insert.Username, new { @class = "form-control", @placeholder = "Tên tài khoản..." })
+                                @Html.ValidationMessageFor(Model => Model.Insert.Username, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Mật khẩu:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.PasswordFor(Model => Model.Insert.Password, new { @class = "form-control", @placeholder = "Mật khẩu..." })
+                                @Html.ValidationMessageFor(Model => Model.Insert.Password, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Xác nhận mật khẩu:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.PasswordFor(Model => Model.Insert.ConfirmPassword, new { @class = "form-control", @placeholder = "Xác nhận mật khẩu..." })
+                                @Html.ValidationMessageFor(Model => Model.Insert.ConfirmPassword, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                    </form>
+                    <div style="text-align:center;display:none;" id="loading-gif">
+                        <img src="~/Content/Image/loading.gif" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="CloseInsert()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitInsert()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="modal fade" id="UpdateEmployee">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Thêm nhân viên</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="UpdateForm">
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Họ và tên:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Update.Name, new { @class = "form-control", @placeholder = "Họ và tên...", @autofocus = "autofocus" })
+                                @Html.ValidationMessageFor(Model => Model.Update.Name, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:30px;"></div>
+                        <div class="form-group col-sm-12" id="birth" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Ngày sinh:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="col-sm-4" style="padding-left:0px;">
+                                    @Html.DropDownListFor(Model => Model.Update.Day, new SelectList(Enumerable.Range(1, 31)), new { @class = "form-control" })
+                                </div>
+                                <div class="col-sm-4" style="padding-left:0px;">
+                                    @Html.DropDownListFor(Model => Model.Update.Month, new SelectList(Enumerable.Range(1, 12)), new { @class = "form-control" })
+                                </div>
+                                <div class="col-sm-4 clear">
+                                    @Html.DropDownListFor(Model => Model.Update.Year, new SelectList(Enumerable.Range(1980, 35)), new { @class = "form-control" })
+                                </div>
+                                <span class="error-message" style="display:none" id="valid-birth1"><span>Ngày sinh không hợp lệ</span></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:20px;"></div>
+                        <div class="form-group col-sm-12" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Giới tính:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="col-sm-4 clear">
+                                    @Html.DropDownListFor(Model => Model.Update.Gender, new List<SelectListItem> { new SelectListItem { Text = "Nam", Value = "Nam" }, new SelectListItem { Text = "Nữ", Value = "Nữ" } }, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:15px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Địa chỉ:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Update.Address, new { @class = "form-control", @placeholder = "Địa chỉ..." })
+                                @Html.ValidationMessageFor(Model => Model.Update.Address, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Số điện thoại:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Update.Phone, new { @class = "form-control", @placeholder = "Số điện thoại..." })
+                                @Html.ValidationMessageFor(Model => Model.Update.Phone, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        @Html.TextBoxFor(Model=>Model.Update.ID,new { @class = "hidden"})
+                    </form>
+                    <div style="text-align:center;display:none;" id="loading-gif1">
+                        <img src="~/Content/Image/loading.gif" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="CloseUpdate()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitUpdate()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="modal fade" id="DeleteEmployee">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Xóa nhân viên</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>Bạn có chắc chắn muốn xóa nhân viên này?</h4>
+                    <div style="text-align:center;display:none;" id="loading-gif2">
+                        <img src="~/Content/Image/loading.gif" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="CloseDelete()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitDelete()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var ShowInsert = function () {
+        $("#InsertEmployee").modal("show");
+    }
+    var CloseInsert = function () {
+        $("#Insert_Name").val("");
+        $("#Insert_Username").val("");
+        $("#Insert_Password").val("");
+        $("#Insert_ConfirmPassword").val("");
+        $("#Insert_Phone").val("");
+        $("#Insert_Address").val("");
+        $("#Insert_Day").val(1);
+        $("#Insert_Month").val(1);
+        $("#InsertEmployee").modal("hide");
+    }
+    var SubmitInsert = function () {        
+        var data = $("#InsertForm").serialize();
+        if (!$("#InsertForm").valid()) {
+            return false;
+        }
+        else {
+            if (($("#Insert_Month").val() == 2 && $("#Insert_Day").val() == 29) ||
+                ($("#Insert_Month").val() == 2 && $("#Insert_Day").val() == 30) ||
+                ($("#Insert_Month").val() == 2 && $("#Insert_Day").val() == 31) ||
+                ($("#Insert_Month").val() == 4 && $("#Insert_Day").val() == 31) ||
+                ($("#Insert_Month").val() == 6 && $("#Insert_Day").val() == 31) ||
+                ($("#Insert_Month").val() == 9 && $("#Insert_Day").val() == 31) ||
+                ($("#Insert_Month").val() == 11 && $("#Insert_Day").val() == 31)) {
+                $("#valid-birth").show();
+                return false;
+            }
+            $("#valid-birth").hide();
+        }
+        $("#loading-gif").show();
+        $.ajax({
+            type: "Post",
+            url: "/Admin/EmployeeManager/InsertEmployee",
+            data: data,
+            success: function (bool) {
+                if (bool == "true") {
+                    if (!alert("Thêm nhân viên thành công")) { window.location.reload(); }
+                }
+                else {
+                    $("#loading-gif").hide();
+                    alert(bool);
+                }
+            }
+        })
+    }
+    var UpdateEmployee = function (ID) {
+        $("#GetID").val(ID);
+        $.ajax({
+            type: "Post",
+            url: "/Admin/EmployeeManager/GetUpdateInfo",
+            data: { employeeID: ID },
+            success: function (info) {
+                var listInfo = info.split("-");
+                $("#Update_Name").val(listInfo[0]);
+                $("#Update_Phone").val(listInfo[1]);
+                $("#Update_Address").val(listInfo[6]);
+                $("#Update_Day").val(parseInt(listInfo[2]));
+                $("#Update_Month").val(parseInt(listInfo[3]));
+                $("#Update_Year").val(parseInt(listInfo[4]));
+                $("#Update_Gender").val(listInfo[5]);
+                $("#UpdateEmployee").modal("show");
+            }
+        })        
+    }
+    var CloseUpdate = function () {
+        $("#Update_Name").val("");
+        $("#Update_Phone").val("");
+        $("#Update_Address").val("");
+        $("#Update_Day").val(1);
+        $("#Update_Month").val(1);
+        $("#UpdateEmployee").modal("hide");
+    }
+    var SubmitUpdate = function () {
+        $("#Update_ID").val($("#GetID").val());
+        var data = $("#UpdateForm").serialize();
+        if (!$("#UpdateForm").valid()) {
+            return false;
+        }
+        else {
+            if (($("#Update_Month").val() == 2 && $("#Update_Day").val() == 29) ||
+                ($("#Update_Month").val() == 2 && $("#Update_Day").val() == 30) ||
+                ($("#Update_Month").val() == 2 && $("#Update_Day").val() == 31) ||
+                ($("#Update_Month").val() == 4 && $("#Update_Day").val() == 31) ||
+                ($("#Update_Month").val() == 6 && $("#Update_Day").val() == 31) ||
+                ($("#Update_Month").val() == 9 && $("#Update_Day").val() == 31) ||
+                ($("#Update_Month").val() == 11 && $("#Update_Day").val() == 31)) {
+                $("#valid-birth1").show();
+                return false;
+            }
+            $("#valid-birth1").hide();
+        }
+        $("#loading-gif1").show();
+        $.ajax({
+            type: "Post",
+            url: "/Admin/EmployeeManager/UpdateEmployee",
+            data: data,
+            success: function (bool) {
+                if (!alert("Sửa nhân viên thành công")) { window.location.reload(); }
+            }
+        })
+    }
+    var DeleteEmployee = function (ID) {
+        $("#GetID").val(ID);
+        $("#DeleteEmployee").modal("show");
+    }
+    var CloseDelete = function () {
+        $("#DeleteEmployee").modal("hide");
+    }
+    var SubmitDelete = function () {
+        $("#loading-gif2").show();
+        var employeeID = $("#GetID").val();
+        $.ajax({
+            type: "Post",
+            url: "/Admin/EmployeeManager/DeleteEmployee",
+            data: { employeeID: employeeID },
+            success: function () {
+                if (!alert("Xóa nhân viên thành công")) { window.location.reload(); }
+            }
+        })
+    }
+</script>

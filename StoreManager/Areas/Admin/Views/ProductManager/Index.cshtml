@@ -1,0 +1,441 @@
+﻿@model StoreManager.Areas.Admin.Models.ProductManager
+@{
+    ViewBag.Title = "Quản lý sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-sm-10 clear">
+    <div class="content-body" style="height:auto;">
+        @RenderPage("~/Views/Shared/_Logout.cshtml")
+        <div class="col-sm-12"><a class="btn btn-primary" onclick="ShowInsert()"><i class="glyphicon glyphicon-plus"></i> Thêm sản phẩm</a></div>
+        <div class="col-sm-12" style="height:20px;"></div>
+        <div class="col-sm-12">
+            <div class="panel-group">
+                <div class="panel panel-primary">
+                    <div class="panel-heading"><h2>Danh sách sản phẩm</h2></div>
+                    <div class="panel-body">
+                        @if (ViewBag.ListProduct != null)
+                        {
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Nhà sản xuất</th>
+                                        <th>Loại</th>
+                                        <th>Giá gốc</th>
+                                        <th>Giá bán</th>
+                                        <th>Ảnh</th>
+                                        <th>Sửa</th>
+                                        <th>Xóa</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in ViewBag.ListProduct)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td>@item.ID</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.Producer</td>
+                                            <td>@item.ProductType</td>
+                                            <td>@string.Format("{0:n0}", item.OriginalPrice) VND</td>
+                                            <td>@string.Format("{0:n0}", item.SellPrice) VND</td>
+                                            <td>
+                                                @if (item.Image != null)
+                                                {
+                                                    <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" width="100" height="120" style="margin-left:auto;margin-right:auto;display:block;" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/Content/Image/null_img.jpg" width="100" height="120" style="margin-left:auto;margin-right:auto;display:block;" />
+                                                }
+                                            </td>
+                                            <td><a class="btn btn-warning" onclick="UpdateProduct(@item.ID)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                                            <td><a class="btn btn-danger" onclick="DeleteProduct(@item.ID)"><i class="glyphicon glyphicon-trash"></i></a></td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12" style="height:30px;"></div>
+    </div>
+</div>
+<input type="hidden" id="GetID" />
+<div class="col-sm-12">
+    <div class="modal fade" id="InsertProduct">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Thêm sản phẩm</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="InsertForm">
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Tên sản phẩm:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Insert.Name, new { @class = "form-control", @placeholder = "Tên sản phẩm...", @autofocus = "autofocus" })
+                                @Html.ValidationMessageFor(Model => Model.Insert.Name, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:40px;"></div>
+                        <div class="form-group col-sm-12" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Nhà sản xuất:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="col-sm-4 clear">
+                                    @Html.DropDownListFor(Model => Model.Insert.Producer, ViewBag.ListProducer as SelectList, null, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:10px;"></div>
+                        <div class="form-group col-sm-12" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Loại sản phẩm:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="col-sm-4 clear">
+                                    @Html.DropDownListFor(Model => Model.Insert.ProductType, ViewBag.ListProductType as SelectList, null, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:15px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Giá gốc:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Insert.OriginalPrice, new { @class = "form-control", @placeholder = "Giá gốc..." })
+                                @Html.ValidationMessageFor(Model => Model.Insert.OriginalPrice, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Giá bán:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Insert.SellPrice, new { @class = "form-control", @placeholder = "Giá bán..." })
+                                @Html.ValidationMessageFor(Model => Model.Insert.SellPrice, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        <div class="col-sm-12 form-group" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Hình ảnh:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="btn btn-primary">
+                                    <input type="file" id="ImageBrowse" accept="image/*" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-sm-12" style="height:15px;"></div>
+                    <div class="col-sm-12" style="display:none;" id="img-pre"><img id="ImagePreview" width="200" height="250" style="margin-left:auto;margin-right:auto;display:block;border:1px solid #eeeeee;" /></div>
+                    <div style="text-align:center;display:none;" id="loading-gif">
+                        <img src="~/Content/Image/loading.gif" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="CloseInsert()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitInsert()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="modal fade" id="UpdateProductModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Sửa sản phẩm</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="UpdateForm">
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Tên sản phẩm:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Update.Name, new { @class = "form-control", @placeholder = "Tên sản phẩm...", @autofocus = "autofocus" })
+                                @Html.ValidationMessageFor(Model => Model.Update.Name, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:40px;"></div>
+                        <div class="form-group col-sm-12" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Nhà sản xuất:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="col-sm-4 clear">
+                                    @Html.DropDownListFor(Model => Model.Update.Producer, ViewBag.ListProducer as SelectList, null, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:10px;"></div>
+                        <div class="form-group col-sm-12" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Loại sản phẩm:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="col-sm-4 clear">
+                                    @Html.DropDownListFor(Model => Model.Update.ProductType, ViewBag.ListProductType as SelectList, null, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:15px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Giá gốc:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Update.OriginalPrice, new { @class = "form-control", @placeholder = "Giá gốc..." })
+                                @Html.ValidationMessageFor(Model => Model.Update.OriginalPrice, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-5">@Html.Label("Giá bán:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                @Html.TextBoxFor(Model => Model.Update.SellPrice, new { @class = "form-control", @placeholder = "Giá bán..." })
+                                @Html.ValidationMessageFor(Model => Model.Update.SellPrice, "", new { @class = "error-message" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="height:35px;"></div>
+                        <div class="col-sm-12 form-group" style="height:20px;">
+                            <div class="col-sm-5">@Html.Label("Hình ảnh:", new { @class = "label-style2" })</div>
+                            <div class="col-sm-7">
+                                <div class="btn btn-primary">
+                                    <input type="file" id="ImageBrowse1" accept="image/*" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-sm-12" style="height:15px;"></div>
+                    <div class="col-sm-12" style="height: 300px;">
+                        <div class="col-sm-6">@Html.Label("Ảnh cũ:", new { @class = "form-control" })</div>
+                        <div class="col-sm-6">@Html.Label("Ảnh mới:", new { @class = "form-control" })</div>
+                        <div class="col-sm-6">
+                            <img id="ImageOld" width="200" height="250" style="margin-left:auto;margin-right:auto;display:block;border:1px solid #eeeeee;" />
+                        </div>
+                        <div class="col-sm-6" style="display:none;" id="img-pre1">
+                            <img id="ImagePreview1" width="200" height="250" style="margin-left:auto;margin-right:auto;display:block;border:1px solid #eeeeee;" />
+                        </div>
+                    </div>
+                    <div style="text-align:center;display:none;" id="loading-gif1">
+                        <img src="~/Content/Image/loading.gif" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="CloseUpdate()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitUpdate()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="modal fade" id="DeleteProductModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4 class="modal-title">Xóa sản phẩm</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12"><h4>Bạn có chắc muốn xóa sản phẩm này?</h4></div>
+                    <div style="text-align:center;display:none;" id="loading-gif2">
+                        <img src="~/Content/Image/loading.gif" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" onclick="CloseDelete()">Cancel</a>
+                    <a class="btn btn-success" onclick="SubmitDelete()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var ShowInsert = function () {
+        $("#InsertProduct").modal("show");
+    }
+    var CloseInsert = function () {
+        $("#Insert_Name").val("");
+        $("#Insert_OriginalPrice").val("");
+        $("#Insert_SellPrice").val("");
+        $("#ImageBrowse").val("");
+        $("#img-pre").hide();
+        $("#InsertProduct").modal("hide");
+    }
+    var SubmitInsert = function () {
+        if (!$("#InsertForm").valid()) {
+            return false;
+        }
+        $("#loading-gif").show();
+        if ($("#img-pre").is(":visible")) {
+            var file = $("#ImageBrowse").get(0).files;
+            var dataimg = new FormData;
+            dataimg.append("ImageGet", file[0]);
+            dataimg.append("Insert.Name", $("#Insert_Name").val());
+            dataimg.append("Insert.Producer", $("#Insert_Producer").val());
+            dataimg.append("Insert.ProductType", $("#Insert_ProductType").val());
+            dataimg.append("Insert.OriginalPrice", $("#Insert_OriginalPrice").val());
+            dataimg.append("Insert.SellPrice", $("#Insert_SellPrice").val());
+            $.ajax({
+                type: "Post",
+                url: "/Admin/ProductManager/InsertProduct",
+                data: dataimg,
+                contentType: false,
+                processData: false,
+                success: function () {
+                    if (!alert("Thêm sản phẩm thành công")) { window.location.reload(); }
+                }
+            })
+        }
+        else {
+            var dataimg = new FormData;
+            dataimg.append("Insert.Name", $("#Insert_Name").val());
+            dataimg.append("Insert.Producer", $("#Insert_Producer").val());
+            dataimg.append("Insert.ProductType", $("#Insert_ProductType").val());
+            dataimg.append("Insert.OriginalPrice", $("#Insert_OriginalPrice").val());
+            dataimg.append("Insert.SellPrice", $("#Insert_SellPrice").val());
+            $.ajax({
+                type: "Post",
+                url: "/Admin/ProductManager/InsertProduct",
+                data: dataimg,
+                contentType: false,
+                processData: false,
+                success: function () {
+                    if (!alert("Thêm sản phẩm thành công")) { window.location.reload(); }
+                }
+            })
+        }
+    }
+    var UpdateProduct = function (ID) {
+        $("#GetID").val(ID);
+        $.ajax({
+            type: "Post",
+            url: "/Admin/ProductManager/GetInfo",
+            data: { ID: ID },
+            success: function (info) {
+                var list = info.split("-");
+                $("#Update_Name").val(list[0]);
+                $("#Update_Producer").val(parseInt(list[1]));
+                $("#Update_ProductType").val(parseInt(list[2]));
+                $("#Update_OriginalPrice").val(list[3]);
+                $("#Update_SellPrice").val(list[4]);
+                $("#ImageOld").attr("src", list[5]);
+                $("#UpdateProductModal").modal("show");
+            }
+        })     
+    }
+    var CloseUpdate = function () {
+        $("#Update_Name").val("");
+        $("#Update_OriginalPrice").val("");
+        $("#Update_SellPrice").val("");
+        $("#ImageBrowse1").val("");
+        $("#img-pre1").hide();
+        $("#UpdateProductModal").modal("hide");
+    }
+    var SubmitUpdate = function () {
+        if (!$("#UpdateForm").valid()) {
+            return false;
+        }
+        $("#loading-gif1").show();
+        if ($("#img-pre1").is(":visible")) {
+            var file = $("#ImageBrowse1").get(0).files;
+            var dataimg = new FormData;
+            dataimg.append("ImageGet", file[0]);
+            dataimg.append("Update.ID", $("#GetID").val());
+            dataimg.append("Update.Name", $("#Update_Name").val());
+            dataimg.append("Update.Producer", $("#Update_Producer").val());
+            dataimg.append("Update.ProductType", $("#Update_ProductType").val());
+            dataimg.append("Update.OriginalPrice", $("#Update_OriginalPrice").val());
+            dataimg.append("Update.SellPrice", $("#Update_SellPrice").val());
+            $.ajax({
+                type: "Post",
+                url: "/Admin/ProductManager/UpdateProduct",
+                data: dataimg,
+                contentType: false,
+                processData: false,
+                success: function () {
+                    if (!alert("Sửa sản phẩm thành công")) { window.location.reload(); }
+                }
+            })
+        }
+        else {
+            var dataimg = new FormData;
+            dataimg.append("Update.ID", $("#GetID").val());
+            dataimg.append("Update.Name", $("#Update_Name").val());
+            dataimg.append("Update.Producer", $("#Update_Producer").val());
+            dataimg.append("Update.ProductType", $("#Update_ProductType").val());
+            dataimg.append("Update.OriginalPrice", $("#Update_OriginalPrice").val());
+            dataimg.append("Update.SellPrice", $("#Update_SellPrice").val());
+            $.ajax({
+                type: "Post",
+                url: "/Admin/ProductManager/UpdateProduct",
+                data: dataimg,
+                contentType: false,
+                processData: false,
+                success: function () {
+                    if (!alert("Sửa sản phẩm thành công")) { window.location.reload(); }
+                }
+            })
+        }
+    }
+    var DeleteProduct = function (ID) {
+        $("#GetID").val(ID);
+        $("#DeleteProductModal").modal("show");
+    }
+    var CloseDelete = function () {
+        $("#DeleteProductModal").modal("hide");
+    }
+    var SubmitDelete = function () {
+        $("#loading-gif2").show();
+        var productID = $("#GetID").val();
+        $.ajax({
+            type: "Post",
+            url: "/Admin/ProductManager/DeleteProduct",
+            data: { productID: productID },
+            success: function (mess) {
+                if (mess == "true") {
+                    if (!alert("Xóa sản phẩm thành công")) { window.location.reload(); }
+                }
+                else {
+                    $("#loading-gif2").hide();
+                    alert(mess);
+                }
+            }
+        })
+    }
+    $(document).ready(function () {
+        $("#ImageBrowse").change(function () {
+            var File = this.files;
+            if (File && File[0]) {
+                ReadImage(File[0])
+            }
+        })
+        $("#ImageBrowse1").change(function () {
+            var File = this.files;
+            if (File && File[0]) {
+                ReadImage1(File[0])
+            }
+        })
+    })
+    var ReadImage = function (file) {
+        var reader = new FileReader();
+        var image = new Image();
+        reader.readAsDataURL(file);
+        reader.onload = function (_file) {
+            image.src = _file.target.result;
+            image.onload = function () {
+                $("#ImagePreview").attr("src", _file.target.result);
+                $("#img-pre").show();
+            }
+        }
+    }
+    var ReadImage1 = function (file) {
+        var reader = new FileReader();
+        var image = new Image();
+        reader.readAsDataURL(file);
+        reader.onload = function (_file) {
+            image.src = _file.target.result;
+            image.onload = function () {
+                $("#ImagePreview1").attr("src", _file.target.result);
+                $("#img-pre1").show();
+            }
+        }
+    }
+</script>
+

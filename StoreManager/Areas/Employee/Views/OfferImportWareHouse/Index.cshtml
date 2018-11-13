@@ -1,4 +1,4 @@
-﻿
+﻿@model StoreManager.Areas.Employee.Models.ImportWareHouseModel
 @{
     ViewBag.Title = "Đề xuất nhập kho";
     Layout = "~/Areas/Employee/Views/Shared/_LayoutEmployee.cshtml";
@@ -8,7 +8,7 @@
     <div class="content-body">
         @RenderPage("~/Views/Shared/_Logout.cshtml")
         <div class="col-sm-12">
-            <a class="btn btn-primary" onclick="ImportDialog()"><i class="glyphicon glyphicon-save"> <span>Đề xuất nhập kho</span></i></a>
+            <a class="btn btn-primary" onclick="ImportDialog()"><i class="glyphicon glyphicon-save"></i> Đề xuất nhập kho</a>
         </div>
         <div class="col-sm-12" style="height:20px;"></div>
         <div class="col-sm-12">
@@ -54,33 +54,44 @@
                         </div>
                         <div class="modal-body">
                             <form id="ClassSubmit">
-                                <div class="form-group col-sm-12" style="height:25px;">
-                                    <div class="col-sm-5">@Html.Label("Môn học:", new { @class = "label-style2" })</div>
-                                    <div class="col-sm-7">
-                                        @Html.DropDownListFor(Model => Model.subjectID, ViewBag.ListSubjectDrop as SelectList, null, new { @class = "form-control" })
-                                    </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-12">@Html.Label("Danh sách sản phẩm:", new { @class = "label-style2" })</div>
                                 </div>
-                                <div class="col-sm-12" style="width:auto; height:10px;"></div>
-                                <div class="form-group col-sm-12" style="height:25px;">
-                                    <div class="col-sm-5">@Html.Label("Ngày học:", new { @class = "label-style2" })</div>
-                                    <div class="col-sm-7">
-                                        @Html.DropDownListFor(Model => Model.dayID, ViewBag.ListDay as SelectList, null, new { @class = "form-control" })
-                                    </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-7"><b>Sản phẩm: </b></div>
+                                    <div class="col-sm-5"><b>Số lượng: </b></div>
                                 </div>
-                                <div class="col-sm-12" style="width:auto; height:10px;"></div>
                                 <div class="form-group col-sm-12" style="height:25px;">
-                                    <div class="col-sm-5">@Html.Label("Ca học:", new { @class = "label-style2" })</div>
-                                    <div class="col-sm-7">
-                                        @Html.DropDownListFor(Model => Model.timeID, ViewBag.ListTime as SelectList, null, new { @class = "form-control" })
-                                    </div>
+                                    <div class="col-sm-7">@Html.DropDownListFor(Model => Model.Product_1, ViewBag.ListProduct as SelectList, new { @class = "form-control" })</div>
+                                    <div class="col-sm-3"><input type="number" id="ProductQuantity-1" class="form-control" max="30" min="10" value="10" onkeydown="return false" /></div>
                                 </div>
-                                <div class="col-sm-12" style="width:auto; height:10px;"></div>
-                                <div class="form-group col-sm-12" style="height:25px;">
-                                    <div class="col-sm-5">@Html.Label("Phòng học:", new { @class = "label-style2" })</div>
-                                    <div class="col-sm-7">
-                                        @Html.DropDownListFor(Model => Model.roomID, ViewBag.ListRoom as SelectList, null, new { @class = "form-control" })
-                                    </div>
+                                <div class="col-sm-12" style="height:5px;"></div>
+                                <div class="form-group col-sm-12" style="height:25px;display:none;" id="Show-1">
+                                    <div class="col-sm-7">@Html.DropDownListFor(Model => Model.Product_2, ViewBag.ListProduct as SelectList, new { @class = "form-control" })</div>
+                                    <div class="col-sm-3"><input type="number" id="ProductQuantity-2" class="form-control" max="30" min="10" value="10" onkeydown="return false" /></div>
+                                    <div class="col-sm-2"><a class="btn btn-danger" onclick="Hide('#Show-1')"><i class="glyphicon glyphicon-remove"></i></a></div>
                                 </div>
+                                <div class="form-group col-sm-12" style="height:25px;display:none;" id="Show-2">
+                                    <div class="col-sm-7">@Html.DropDownListFor(Model => Model.Product_3, ViewBag.ListProduct as SelectList, new { @class = "form-control" })</div>
+                                    <div class="col-sm-3"><input type="number" id="ProductQuantity-3" class="form-control" max="30" min="10" value="10" onkeydown="return false" /></div>
+                                    <div class="col-sm-2"><a class="btn btn-danger" onclick="Hide('#Show-2')"><i class="glyphicon glyphicon-remove"></i></a></div>
+                                </div>
+                                <div class="form-group col-sm-12" style="height:25px;display:none;" id="Show-3">
+                                    <div class="col-sm-7">@Html.DropDownListFor(Model => Model.Product_4, ViewBag.ListProduct as SelectList, new { @class = "form-control" })</div>
+                                    <div class="col-sm-3"><input type="number" id="ProductQuantity-4" class="form-control" max="30" min="10" value="10" onkeydown="return false" /></div>
+                                    <div class="col-sm-2"><a class="btn btn-danger" onclick="Hide('#Show-3')"><i class="glyphicon glyphicon-remove"></i></a></div>
+                                </div>
+                                <div class="form-group col-sm-12" style="height:25px;display:none;" id="Show-4">
+                                    <div class="col-sm-7">@Html.DropDownListFor(Model => Model.Product_5, ViewBag.ListProduct as SelectList, new { @class = "form-control" })</div>
+                                    <div class="col-sm-3"><input type="number" id="ProductQuantity-5" class="form-control" max="30" min="10" value="10" onkeydown="return false" /></div>
+                                    <div class="col-sm-2"><a class="btn btn-danger" onclick="Hide('#Show-4')"><i class="glyphicon glyphicon-remove"></i></a></div>
+                                </div>
+                                <div class="form-group col-sm-12" style="height:25px;display:none;" id="Show-5">
+                                    <div class="col-sm-7">@Html.DropDownListFor(Model => Model.Product_6, ViewBag.ListProduct as SelectList, new { @class = "form-control" })</div>
+                                    <div class="col-sm-3"><input type="number" id="ProductQuantity-6" class="form-control" max="30" min="10" value="10" onkeydown="return false" /></div>
+                                    <div class="col-sm-2"><a class="btn btn-danger" onclick="Hide('#Show-5')"><i class="glyphicon glyphicon-remove"></i></a></div>
+                                </div>
+                                <div class="col-sm-12" style="padding-left:30px; padding-top:10px;" id="ButtonAdd"><a class="btn btn-success" onclick="ShowNext()"><i class="glyphicon glyphicon-plus"></i></a></div>
                             </form>
                             <div style="text-align:center;display:none;" id="loading-gif">
                                 <img src="~/Content/Image/loading.gif" />
@@ -96,3 +107,81 @@
         </div>
     </div>
 </div>
+<script>
+    var ImportDialog = function () {
+        $("#ImportDialog").modal("show");
+    }
+    var CloseImport = function () {
+        for (var i = 1; i < 6; i++) {
+            var GetID = "#Show-" + i;
+            var GetIDProduct = "#Product_" + (i + 1);
+            var GetIDQuantity = "#ProductQuantity-" + (i + 1);
+            $(GetID).hide();
+            $(GetIDProduct).val(1);
+            $(GetIDQuantity).val(10);
+        }
+        $("#ImportDialog").modal("hide");
+    }
+    var ShowNext = function () {
+        for (var i = 1; i < 6; i++) {
+            var GetID = "#Show-" + i;
+            if ($(GetID).is(":visible")) {
+                continue;
+            }
+            else {
+                $(GetID).show();
+                break;
+            }
+        }
+        if ($("#Show-5").is(":visible")) {
+            $("#ButtonAdd").hide();
+        }
+    }
+    var Hide = function (ID) {
+        $(ID).hide();
+        $("#ButtonAdd").show();
+    }
+    var ConfirmImport = function () {
+        $("#loading-gif").show();
+        var listProductID = "";
+        var listQuantity = "";
+        for (var i = 1; i < 7; i++) {
+            var GetID = "#Product_" + i;
+            var GetQuan = "#ProductQuantity-" + i;
+            if (i == 1) {
+                listProductID += $(GetID).val();
+                listQuantity += $(GetQuan).val();
+            }
+            else {
+                var GetShowID = "#Show-" + (i - 1);
+                if ($(GetShowID).is(":visible")) {
+                    listProductID += "-" + $(GetID).val();
+                    listQuantity += "-" + $(GetQuan).val();
+                }
+            }
+        }
+        var listProductIDSplit = listProductID.split("-");
+        var listQuantitySplit = listQuantity.split("-");
+        for (var i = 0; i < listProductIDSplit.length; i++) {
+            var total = parseInt(listQuantitySplit[i]);
+            for (var j = 0; j < listProductIDSplit.length; j++) {               
+                if (listProductIDSplit[i] == listProductIDSplit[j] && i != j) {
+                    total += parseInt(listQuantitySplit[j]);
+                }
+            }
+            if (total > 30) {
+                alert("Sản phẩm thứ " + (i + 1) + " có tổng sô lượng vượt quá cho phép là 30");
+                $("#loading-gif").hide();
+                return false;
+            }
+        }
+        $.ajax({
+            type: "Post",
+            url: "/Employee/OfferImportWareHouse/OfferImport",
+            data: { listProduct: listProductID, listQuantity: listQuantity },
+            success: function () {
+                if (!alert("Đề xuất nhập kho thành công")) { window.location.reload(); }              
+            }
+        })
+    }
+</script>

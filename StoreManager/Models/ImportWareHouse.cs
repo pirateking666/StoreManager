@@ -19,13 +19,17 @@ namespace StoreManager.Models
 
         public DateTime ModifyDay { get; set; }
 
-        public int SupplierID { get; set; }
+        public int? SupplierID { get; set; }
 
         public int StatusID { get; set; }
+        
+        public int EmployeeID { get; set; }
 
         public virtual Status Status { get; set; }
 
         public virtual Supplier Supplier { get; set; }
+
+        public virtual Employee Employee { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ImportWareHouseDetail> ImportWareHouseDetails { get; set; }

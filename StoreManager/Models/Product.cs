@@ -38,6 +38,8 @@ namespace StoreManager.Models
         [Column(TypeName = "image")]
         public byte[] ProductImage { get; set; }
 
+        public int? StatusID { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BillDetail> BillDetails { get; set; }
 
@@ -55,5 +57,7 @@ namespace StoreManager.Models
         public virtual ProductType ProductType { get; set; }
 
         public virtual WareHouse WareHouse { get; set; }
+
+        public virtual Status Status { get; set; }
     }
 }

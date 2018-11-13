@@ -16,7 +16,16 @@
                     {
                         <div class="col-sm-12" style="background:white;border-radius:5px;height:200px;border:1px solid black;margin-top:20px;">
                             <div class="col-sm-12">
-                                <div class="col-sm-3" style="border: 1px solid #eeeeee; margin-top:7px;"><img src="data:image;base64,@System.Convert.ToBase64String(item.productImage)" width="150" height="180" style="margin-left:auto;margin-right:auto;display:block;" /></div>
+                                <div class="col-sm-3" style="border: 1px solid #eeeeee; margin-top:7px;">
+                                    @if (item.productImage != null)
+                                    {
+                                        <img src="data:image;base64,@System.Convert.ToBase64String(item.productImage)" width="150" height="180" style="margin-left:auto;margin-right:auto;display:block;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/Image/null_img.jpg" width="150" height="180" style="margin-left:auto;margin-right:auto;display:block;" />
+                                    }
+                                </div>
                                 <div class="col-sm-8" style="margin-top:20px;">
                                     <div class="col-sm-12" style="font-size:17px;"><b>Tên sản phẩm:</b> @item.productName</div>
                                     <div class="col-sm-12" style="color: red; padding-top:20px;"><b>Giá:</b> @string.Format("{0:n0}", item.price) VND</div>
@@ -394,7 +403,7 @@
         $("#NewCustomer_phone").val($("#GetPhone").val());
         var data = $("#NewCustomerForm").serialize();
         if (!$("#NewCustomerForm").valid()) {
-            return true;
+            return false;
         }
         else {
             if (($("#NewCustomer_month").val() == 2 && $("#NewCustomer_day").val() == 29) ||

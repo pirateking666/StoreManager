@@ -18,8 +18,7 @@ namespace StoreManager.Areas.Employee.Controllers
             ViewBag.Home = "active-menu";
             ViewBag.ChangePassword = "menu-style";
             ViewBag.OfferImportWareHouse = "menu-style";
-            ViewBag.ExportWareHouse = "menu-style";
-            ViewBag.AddBill = "menu-style";
+            
             ViewBag.AcceptOrder = "menu-style";
             return View();
         }

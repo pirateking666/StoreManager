@@ -24,5 +24,15 @@ namespace StoreManager.Models.DAO
             else
                 return acc.Position.Name;
         }
+        public void Insert(string username, string password)
+        {
+            StoreManagerDBContext db = new StoreManagerDBContext();
+            Account a = new Account();
+            a.username = username;
+            a.password = password;
+            a.PositionID = 2;
+            db.Accounts.Add(a);
+            db.SaveChanges();
+        }
     }
 }

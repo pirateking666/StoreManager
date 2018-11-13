@@ -20,6 +20,7 @@ namespace StoreManager.Areas.Admin.Controllers
             ViewBag.AcceptImportWareHouse = "menu-style";
             ViewBag.ProductManager = "menu-style";
             ViewBag.EmployeeManager = "menu-style";
+            ViewBag.Statistical = "menu-style";
             return View();
         }
     }

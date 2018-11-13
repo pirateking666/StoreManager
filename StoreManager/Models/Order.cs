@@ -26,12 +26,20 @@ namespace StoreManager.Models
 
         public int? SaleOff { get; set; }
 
+        public int? StatusID { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Bill> Bills { get; set; }
 
         public virtual SaleOff SaleOff1 { get; set; }
 
+        public virtual Status Status { get; set; }
+
+        public virtual Customer Customer { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+
+        public virtual ICollection<Customer> Customers { get; set; }
     }
 }

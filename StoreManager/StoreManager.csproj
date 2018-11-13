@@ -156,10 +156,24 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AcceptImportWareHouseController.cs" />
+    <Compile Include="Areas\Admin\Controllers\EmployeeManagerController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ProductManagerController.cs" />
+    <Compile Include="Areas\Admin\Models\EmployeeManager.cs" />
+    <Compile Include="Areas\Admin\Models\ListImportDetail.cs" />
+    <Compile Include="Areas\Admin\Models\ListImportWareHouse.cs" />
+    <Compile Include="Areas\Admin\Models\ListProduct.cs" />
+    <Compile Include="Areas\Admin\Models\ProcessImportWareHouse.cs" />
+    <Compile Include="Areas\Admin\Models\ProductManager.cs" />
+    <Compile Include="Areas\Employee\Controllers\AcceptOrderController.cs" />
     <Compile Include="Areas\Employee\Controllers\HomeController.cs" />
     <Compile Include="Areas\Employee\Controllers\OfferImportWareHouseController.cs" />
     <Compile Include="Areas\Employee\EmployeeAreaRegistration.cs" />
+    <Compile Include="Areas\Employee\Models\AcceptOrder.cs" />
+    <Compile Include="Areas\Employee\Models\ImportWareHouseModel.cs" />
+    <Compile Include="Areas\Employee\Models\ListOrder.cs" />
+    <Compile Include="Areas\Employee\Models\ListOrderDetail.cs" />
     <Compile Include="Common\Md5Function.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -177,12 +191,21 @@
     <Compile Include="Models\DAO\CustomerModel.cs" />
     <Compile Include="Models\DAO\ListWareHouse.cs" />
     <Compile Include="Models\DAO\LoginModel.cs" />
+    <Compile Include="Models\DAO\ModiffyBillDetail.cs" />
     <Compile Include="Models\DAO\ModifyAccount.cs" />
+    <Compile Include="Models\DAO\ModifyBill.cs" />
     <Compile Include="Models\DAO\ModifyCustomer.cs" />
     <Compile Include="Models\DAO\ModifyEmployee.cs" />
+    <Compile Include="Models\DAO\ModifyExportWareHouse.cs" />
+    <Compile Include="Models\DAO\ModifyExportWareHouseDetail.cs" />
+    <Compile Include="Models\DAO\ModifyImportWareHouse.cs" />
+    <Compile Include="Models\DAO\ModifyImportWareHouseDetail.cs" />
     <Compile Include="Models\DAO\ModifyOrder.cs" />
     <Compile Include="Models\DAO\ModifyOrderDetail.cs" />
+    <Compile Include="Models\DAO\ModifyProducer.cs" />
     <Compile Include="Models\DAO\ModifyProduct.cs" />
+    <Compile Include="Models\DAO\ModifyProductType.cs" />
+    <Compile Include="Models\DAO\ModifySupplier.cs" />
     <Compile Include="Models\DAO\ModifyWareHouse.cs" />
     <Compile Include="Models\DAO\Status.cs" />
     <Compile Include="Models\Employee.cs" />
@@ -217,6 +240,7 @@
     <Content Include="Content\Image\header-picture.png" />
     <Content Include="Content\Image\loading.gif" />
     <Content Include="Content\Image\logo_text.png" />
+    <Content Include="Content\Image\null_img.jpg" />
     <Content Include="Content\Image\student-icon.png" />
     <Content Include="Content\Image\teacher-icon.png" />
     <Content Include="Content\style.css" />
@@ -238,6 +262,10 @@
     <Content Include="Areas\Employee\Views\Shared\_LayoutEmployee.cshtml" />
     <Content Include="Areas\Employee\Views\Home\Index.cshtml" />
     <Content Include="Areas\Employee\Views\OfferImportWareHouse\Index.cshtml" />
+    <Content Include="Areas\Employee\Views\AcceptOrder\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\AcceptImportWareHouse\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\EmployeeManager\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductManager\Index.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -271,8 +299,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Employee\Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
