@@ -16,11 +16,12 @@ namespace StoreManager.Areas.Admin.Models
             {
                 new ModifyWareHouse().Update(list[i].ProductID, list[i].Quantity);
             }
-            new ModifyImportWareHouse().UpdateStatus(importID, 2);
+            new ModifyImportWareHouse().UpdateStatus(importID, 2, supplierID);
         }
         public void RemoveImport(int importID)
         {
-            new ModifyImportWareHouse().UpdateStatus(importID, 3);
+            int supplierID = 0;
+            new ModifyImportWareHouse().UpdateStatus(importID, 3, supplierID);
         }
     }
 }

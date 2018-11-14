@@ -28,5 +28,9 @@ namespace StoreManager.Models.DAO
         {
             return new StoreManagerDBContext().ImportWareHouseDetails.Where(x => x.ImportWareHouseID == ImportID).ToList();
         }
+        public List<ImportWareHouseModel> GetListForStatistical()
+        {
+            return new StoreManagerDBContext().ImportWareHouseDetails.Where(x => x.ImportWareHouse.ModifyDay.Month == DateTime.Now.Month && x.ImportWareHouse.StatusID == 2).Select(x => new ImportWareHouseModel { IDImport = x.ImportWareHouseID, IDProduct = x.ProductID, ModifyDay = x.ImportWareHouse.ModifyDay, Quantity = x.Quantity, Price = x.Price }).ToList();
+        }
     }
 }

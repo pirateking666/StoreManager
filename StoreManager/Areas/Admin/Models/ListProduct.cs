@@ -21,5 +21,6 @@ namespace StoreManager.Areas.Admin.Models
         [RegularExpression("^[1-9][0-9]{2,}[0][0][0]$", ErrorMessage = "Nhập sai định dạng")]
         public decimal SellPrice { get; set; }
         public byte[] Image { get; set; }
+        public int statusID { get; set; }
     }
 }

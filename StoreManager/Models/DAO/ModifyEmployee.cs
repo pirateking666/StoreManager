@@ -52,6 +52,7 @@ namespace StoreManager.Models.DAO
             Employee e = new Employee();
             e.ID = GetNextID();
             e.Name = model.Name;
+            e.StatusID = 1;
             e.Birth = new DateTime(model.Year, model.Month, model.Day);
             e.Gender = model.Gender;
             e.Address = model.Address;
@@ -62,7 +63,7 @@ namespace StoreManager.Models.DAO
         }
         public List<Employee> GetList()
         {
-            return new StoreManagerDBContext().Employees.ToList();
+            return new StoreManagerDBContext().Employees.Where(x => x.StatusID == 1).ToList();
         }
         public Employee GetEmployeeByID(int ID)
         {
@@ -84,11 +85,12 @@ namespace StoreManager.Models.DAO
             e.Phone = model.Phone;
             db.SaveChanges();
         }
-        public void DeleteEmployeeByID(int employeeID)
+        public void UpdateStatusAndPassword(int employeeID)
         {
             StoreManagerDBContext db = new StoreManagerDBContext();
             Employee e = db.Employees.SingleOrDefault(x => x.ID == employeeID);
-            db.Employees.Remove(e);
+            new ModifyAccount().UpdatePasswordDeleteEmployee(e.username);
+            e.StatusID = 2;
             db.SaveChanges();
         }
     }

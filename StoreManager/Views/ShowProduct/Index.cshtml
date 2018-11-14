@@ -89,11 +89,16 @@
                 type: "Post",
                 url: "/ShowProduct/UpdateCart",
                 data: { ID: ProductID, Quantity: "1" },
-                success: function () {
-                    $(ID).removeClass("btn btn-danger");
-                    $(ID).addClass("btn btn-default");
-                    $(ID).click(function () { return false; });
-                    window.location.reload();
+                success: function (bool) {
+                    if (bool == "true") {
+                        $(ID).removeClass("btn btn-danger");
+                        $(ID).addClass("btn btn-default");
+                        $(ID).click(function () { return false; });
+                        window.location.reload();
+                    }
+                    else {
+                        alert(bool);
+                    }
                 }
             })
         }
@@ -102,11 +107,16 @@
                 type: "Post",
                 url: "/ShowProduct/UpdateCart",
                 data: { ID: "-" + ProductID, Quantity: "-1" },
-                success: function () {
-                    $(ID).removeClass("btn btn-danger");
-                    $(ID).addClass("btn btn-default");
-                    $(ID).click(function () { return false; });
-                    window.location.reload();
+                success: function (bool) {
+                    if (bool == "true") {
+                        $(ID).removeClass("btn btn-danger");
+                        $(ID).addClass("btn btn-default");
+                        $(ID).click(function () { return false; });
+                        window.location.reload();
+                    }
+                    else {
+                        alert(bool);
+                    }
                 }
             })
         }

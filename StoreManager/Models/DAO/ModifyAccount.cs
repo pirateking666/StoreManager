@@ -34,5 +34,23 @@ namespace StoreManager.Models.DAO
             db.Accounts.Add(a);
             db.SaveChanges();
         }
+        public void UpdatePasswordDeleteEmployee(string username)
+        {
+            StoreManagerDBContext db = new StoreManagerDBContext();
+            Account a = db.Accounts.SingleOrDefault(x => x.username == username);
+            a.password = "NULL";
+            db.SaveChanges();
+        }
+        public Account Select(string username)
+        {
+            return new StoreManagerDBContext().Accounts.SingleOrDefault(x => x.username == username);
+        }
+        public void UpdatePasswordChange(string username, string password)
+        {
+            StoreManagerDBContext db = new StoreManagerDBContext();
+            Account a = db.Accounts.SingleOrDefault(x => x.username == username);
+            a.password = password;
+            db.SaveChanges();
+        }
     }
 }

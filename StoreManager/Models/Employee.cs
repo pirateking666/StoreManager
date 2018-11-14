@@ -14,7 +14,6 @@ namespace StoreManager.Models
         {
             Bills = new HashSet<Bill>();
             ExportWareHouses = new HashSet<ExportWareHouse>();
-            ImportWareHouses = new HashSet<ImportWareHouse>();
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -42,14 +41,16 @@ namespace StoreManager.Models
         [StringLength(50)]
         public string username { get; set; }
 
+        public int? StatusID { get; set; }
+
         public virtual Account Account { get; set; }
+
+        public virtual Status Status { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Bill> Bills { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ExportWareHouse> ExportWareHouses { get; set; }
-
-        public virtual ICollection<ImportWareHouse> ImportWareHouses { get; set; }
     }
 }

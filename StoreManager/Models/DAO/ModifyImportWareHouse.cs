@@ -29,11 +29,15 @@ namespace StoreManager.Models.DAO
         {
             return new StoreManagerDBContext().ImportWareHouses.Where(x => x.StatusID == 1).Select(x => new ListImportWareHouse { ID = x.ID, employeeName = x.Employee.Name, modifyDay = x.ModifyDay }).ToList();
         }
-        public void UpdateStatus(int ImportID, int statusID)
+        public void UpdateStatus(int ImportID, int statusID, int supplierID)
         {
             StoreManagerDBContext db = new StoreManagerDBContext();
             ImportWareHouse iwh = db.ImportWareHouses.SingleOrDefault(x => x.ID == ImportID);
             iwh.StatusID = statusID;
+            if(supplierID != 0)
+            {
+                iwh.SupplierID = supplierID;
+            }
             db.SaveChanges();
         }
     }

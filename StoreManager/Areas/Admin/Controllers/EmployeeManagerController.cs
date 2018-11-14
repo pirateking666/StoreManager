@@ -41,7 +41,7 @@ namespace StoreManager.Areas.Admin.Controllers
         }
         public JsonResult DeleteEmployee(int employeeID)
         {
-            new ModifyEmployee().DeleteEmployeeByID(employeeID);
+            new ModifyEmployee().UpdateStatusAndPassword(employeeID);
             return Json("", JsonRequestBehavior.AllowGet);
         }
     }
