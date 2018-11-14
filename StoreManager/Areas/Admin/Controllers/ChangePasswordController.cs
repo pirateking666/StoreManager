@@ -26,7 +26,7 @@ namespace StoreManager.Areas.Admin.Controllers
         }
         public JsonResult ChangePasswordVerify(ChangePassword model)
         {
-            string username = Session["userName"].ToString();
+            string username = Session["username"].ToString();
             ChangePassword cp = new ChangePassword();
             model.username = username;
             string check = cp.ChangePasswordVeri(model);

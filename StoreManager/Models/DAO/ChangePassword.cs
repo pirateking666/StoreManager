@@ -23,7 +23,7 @@ namespace StoreManager.Models.DAO
             Md5Function md5 = new Md5Function();
             Account acc = new ModifyAccount().Select(model.username);
             string oldpass = md5.MD5HashFunction(model.oldPassword);
-            if (oldpass == acc.password)
+            if (oldpass == acc.password.Split(' ')[0])
             {
                 string newpass = md5.MD5HashFunction(model.newPassword);
                 ModifyAccount ma = new ModifyAccount();

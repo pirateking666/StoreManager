@@ -23,12 +23,11 @@ namespace StoreManager.Controllers
             ViewBag.Cart = "menu-style";
             ViewBag.ListProduct = new ModifyProduct().GetList();
             ViewBag.ListCart = Session["listIDProduct"].ToString().Split('-');
-            ViewBag.NumberOfProduct = new ModifyProduct().GetList().Count();
             return View();
         }
         public JsonResult UpdateCart(string ID, string Quantity)
         {
-            if(Session["listIDProduct"].ToString().Split('-').Count() == 6 && Session["listIDProduct"] != null)
+            if (Session["listIDProduct"].ToString().Split('-').Count() == 6 && Session["listIDProduct"] != null)
             {
                 return Json("Giỏ hàng không thể chứa quá 6 sản phẩm", JsonRequestBehavior.AllowGet);
             }
@@ -36,7 +35,7 @@ namespace StoreManager.Controllers
             Session["listQuantityProduct"] += Quantity;
             string s = (string)Session["listIDProduct"];
             string ss = (string)Session["listQuantityProduct"];
-            return Json("true",JsonRequestBehavior.AllowGet);
+            return Json("true", JsonRequestBehavior.AllowGet);
         }
     }
 }
