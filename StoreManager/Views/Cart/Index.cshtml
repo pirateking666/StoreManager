@@ -38,11 +38,11 @@
                                         <div class="col-sm-4"><b>Sẵn có:</b> @item.quantity</div>
                                         @if (item.quantity == 0)
                                         {
-                                            <div class="col-sm-8"><b style="color: red;">Hết hàng</b><input type="number" id="QuantityProduct-@item.ID" value="0" onkeydown="return false" style="display:none;"/></div>
+                                            <div class="col-sm-8"><b style="color: red;">Hết hàng</b><a style="display:none;" id="QuantityProduct-@item">0</a></div>
                                         }
                                         else if (item.quantity < 10)
                                         {
-                                            <div class="col-sm-8"><b>Số lượng đặt hàng:</b> <input type="number" id="QuantityProduct-@item.ID" min="1" max="@item.quantity" value="1" onkeydown="return false" /></div>
+                                            <div class="col-sm-8"><b>Số lượng đặt hàng:</b><input type="number" id="QuantityProduct-@item.ID" min="1" max="@item.quantity" value="1" onkeydown="return false" /></div>
                                         }
                                         else
                                         {
@@ -309,7 +309,7 @@
         var check = 1;
         for (var i = 0; i < listCart.length; i++) {
             var Getquan = "#QuantityProduct-" + listCart[i];
-            if ($(Getquan).val() == 0) {
+            if ($(Getquan).val() == undefined) {
                 check = 0;
                 break;
             }
